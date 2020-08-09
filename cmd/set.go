@@ -82,7 +82,7 @@ var setCmd = &cobra.Command{
 				os.Exit(1)
 			}
 		}
-		fmt.Printf("savied secret %s in %s keychain\n", args[0], keychainName)
+		fmt.Printf("saved secret %s in %s keychain\n", args[0], keychainName)
 	},
 }
 
