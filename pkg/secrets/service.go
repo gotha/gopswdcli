@@ -1,5 +1,7 @@
 /**
+ * The code below is based on zalando/go-keyring work
  * @author - https://github.com/zalando/go-keyring
+ * @author - http://github.com/gotha/gopswdcli
  * @licence
  * The MIT License (MIT)
  *
