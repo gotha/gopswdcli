@@ -37,7 +37,7 @@ var usernameCmd = &cobra.Command{
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		keyring, err := secrets.NewLinuxKeyring(keychainName)
+		keyring, err := secrets.NewKeyring(keychainName)
 		if err != nil {
 			fmt.Printf("error opening keychain: %s", err)
 			os.Exit(1)
@@ -63,7 +63,7 @@ var passwordCmd = &cobra.Command{
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		keyring, err := secrets.NewLinuxKeyring(keychainName)
+		keyring, err := secrets.NewKeyring(keychainName)
 		if err != nil {
 			fmt.Printf("error opening keychain: %s", err)
 			os.Exit(1)
@@ -91,7 +91,7 @@ var secretCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		secretKey := args[0]
 
-		keyring, err := secrets.NewLinuxKeyring(keychainName)
+		keyring, err := secrets.NewKeyring(keychainName)
 		if err != nil {
 			fmt.Printf("error opening keychain: %s", err)
 			os.Exit(1)

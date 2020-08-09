@@ -35,33 +35,31 @@ import (
 )
 
 var (
-	// ErrNotFound is the expected error if the secret isn't found in the
-	// keyring.
-	ErrNotFound = fmt.Errorf("secret not found in keyring")
+	ErrNotFound        = fmt.Errorf("secret not found in keyring")
+	ErrorDuplicateItem = fmt.Errorf("Item already exists")
 )
 
-// KeyringLinux - dbus specific keyring for linux
-type KeyringLinux struct {
+type Keyring struct {
 	collection    string
 	secretService *SecretService
 }
 
-func NewLinuxKeyring(collection string) (*KeyringLinux, error) {
+func NewKeyring(collection string) (*Keyring, error) {
 	secretService, err := NewSecretService()
 	if err != nil {
 		return nil, fmt.Errorf("error creating secret service: %w", err)
 	}
-	return &KeyringLinux{
+	return &Keyring{
 		collection:    collection,
 		secretService: secretService,
 	}, nil
 }
 
-func NewDefaultLinuxKeyring() (*KeyringLinux, error) {
-	return NewLinuxKeyring("login")
+func NewDefaultKeyring() (*Keyring, error) {
+	return NewKeyring("login")
 }
 
-func (k *KeyringLinux) Set(service, username, pass string) error {
+func (k *Keyring) Set(service, username, pass string) error {
 
 	// open a session
 	session, err := k.secretService.OpenSession()
@@ -98,7 +96,7 @@ func (k *KeyringLinux) Set(service, username, pass string) error {
 }
 
 // findItem looksup an item by service and user.
-func (k *KeyringLinux) findItem(key string) (dbus.ObjectPath, error) {
+func (k *Keyring) findItem(key string) (dbus.ObjectPath, error) {
 
 	collection := k.secretService.GetSecretsCollection(k.collection)
 	search := map[string]string{
@@ -123,7 +121,7 @@ func (k *KeyringLinux) findItem(key string) (dbus.ObjectPath, error) {
 }
 
 // Get gets a secret from the keyring given a key
-func (k *KeyringLinux) Get(key string) (string, string, error) {
+func (k *Keyring) Get(key string) (string, string, error) {
 
 	item, err := k.findItem(key)
 	if err != nil {
@@ -156,7 +154,7 @@ func (k *KeyringLinux) Get(key string) (string, string, error) {
 }
 
 // Delete deletes a secret, identified by service & user, from the keyring.
-func (k *KeyringLinux) Delete(key string) error {
+func (k *Keyring) Delete(key string) error {
 
 	item, err := k.findItem(key)
 	if err != nil {

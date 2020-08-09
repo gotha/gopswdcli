@@ -38,7 +38,7 @@ var setCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 
-		keyring, err := secrets.NewLinuxKeyring(keychainName)
+		keyring, err := secrets.NewKeyring(keychainName)
 		if err != nil {
 			fmt.Printf("error opening keychain: %s\n", err)
 			os.Exit(1)
@@ -65,9 +65,22 @@ var setCmd = &cobra.Command{
 		fmt.Printf("%s:%s\n", username, password)
 
 		err = keyring.Set(args[0], username, password)
-		if err != nil {
-			fmt.Println("error saving secret")
-			os.Exit(1)
+		if err == secrets.ErrDuplicateItem {
+			err := keyring.Delete(args[0])
+			if err != nil {
+				fmt.Println("error resetting secret")
+				os.Exit(1)
+			}
+			err = keyring.Set(args[0], username, password)
+			if err != nil {
+				fmt.Println("error saving secret after reseting it")
+				os.Exit(1)
+			}
+		} else {
+			if err != nil {
+				fmt.Println("error saving secret")
+				os.Exit(1)
+			}
 		}
 		fmt.Printf("savied secret %s in %s keychain\n", args[0], keychainName)
 	},
