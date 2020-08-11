@@ -35,8 +35,8 @@ import (
 )
 
 var (
-	ErrNotFound        = fmt.Errorf("secret not found in keyring")
-	ErrorDuplicateItem = fmt.Errorf("Item already exists")
+	ErrNotFound      = fmt.Errorf("secret not found in keyring")
+	ErrDuplicateItem = fmt.Errorf("Item already exists")
 )
 
 type Keyring struct {
